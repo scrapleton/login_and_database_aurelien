@@ -1,5 +1,6 @@
 import 'dart:io';
 import '../utils/data.dart';
+import '../utils/string_color.dart';
 
 bool stopApp = false;
 bool isUserLogged = false;
@@ -25,7 +26,7 @@ void main(List<String> arguments) {
 }
 
 appInitialisation() {
-  stdout.write("\x1B[2J\x1B[0;0H");
+  clearTerminal();
   isUserLogged = false;
   isUserAdmin = false;
   userName = null;
@@ -33,10 +34,11 @@ appInitialisation() {
 }
 
 appLoginProcess() {
-  stdout.write("\nPlease login");
-  stdout.write("\nEnter your name : ");
+  stdout.write(coloredString('\nPlease login\n', color: StringColor.green));
+  stdout.write(coloredString('\nEnter your name : ', color: StringColor.blue));
   userName = stdin.readLineSync();
-  stdout.write("\nEnter your password : ");
+  stdout.write(
+      coloredString('\nEnter your password : ', color: StringColor.blue));
   stdin.echoMode = false;
   userPassword = stdin.readLineSync();
   stdin.echoMode = true;
@@ -52,26 +54,31 @@ appLoginProcess() {
       isUserLogged = true;
       //WRONG PASSWORD case
     } else {
-      stdout.write("\x1B[2J\x1B[0;0H");
-      stdout.write("\nWrong password");
+      clearTerminal();
+      stdout.write(coloredString('\nWrong password', color: StringColor.red));
       appTryAgainOrQuit();
     }
     //NO USERNAME case
   } else {
-    stdout.write("\x1B[2J\x1B[0;0H");
-    stdout.write("\nYou did not enter any name ...");
+    clearTerminal();
+    stdout.write(coloredString('\nYou did not enter any name ...',
+        color: StringColor.red));
     appTryAgainOrQuit();
   }
 }
 
 appShowHeader() {
-  stdout.write("\x1B[2J\x1B[0;0H");
-  stdout.write("\nHello $userName");
-  stdout.write("\nYou are logged as ${isUserAdmin ? 'ADMIN' : 'GUEST'} ");
+  clearTerminal();
+  stdout.write(coloredString('YOU ARE LOGGED AS :', color: StringColor.green));
+  stdout.write(coloredString('\n${isUserAdmin ? 'ADMIN' : 'GUEST'}',
+      color: StringColor.white));
+  stdout.write(coloredString(' $userName', color: StringColor.white));
 }
 
 appDataAccess() {
-  stdout.write("\n\nType a user ID to access his data (ID are numbers) : ");
+  stdout.write(coloredString(
+      '\n\nType a user ID to access his data (ID are numbers) : ',
+      color: StringColor.blue));
   String? index = stdin.readLineSync();
 
   //Index must be a INT
@@ -86,19 +93,23 @@ appDataAccess() {
       appTryAgainOrQuit();
       //No entry found
     } else {
-      stdout.write("\nNO ENTRY FOUND");
+      stdout
+          .write(coloredString('\nNO ENTRY FOUND', color: StringColor.yellow));
       appTryAgainOrQuit();
     }
     //Invalid ID
   } else {
-    stdout.write("\nERROR : Invalid ID");
-    stdout.write("\nID must be a number");
+    stdout.write(coloredString('\nERROR ', color: StringColor.red));
+    stdout.write(": Invalid ID");
+    stdout.write(
+        coloredString("\nID must be a number", color: StringColor.yellow));
     appTryAgainOrQuit();
   }
 }
 
 appTryAgainOrQuit() {
-  stdout.write("\n\nPress Enter to try again or 'q' to quit : ");
+  stdout.write(coloredString("\n\nPress Enter to try again or 'q' to quit : ",
+      color: StringColor.grey));
   String? input = stdin.readLineSync();
 
   if (input != null && input.toLowerCase() == 'q') {
@@ -107,8 +118,39 @@ appTryAgainOrQuit() {
 }
 
 appShowUserData(Map user) {
-  stdout.write("\nID    : ${user['id']}");
-  stdout.write("\nNAME  : ${user['name']}");
-  stdout.write("\nAGE   : ${user['age']}");
-  stdout.write("\nEMAIL : ${user['email']}");
+  stdout.write(coloredString("\n++===============================",
+      color: StringColor.grey));
+
+  stdout.write(coloredString("\n|| ", color: StringColor.grey));
+  stdout.write("ID     ");
+  stdout.write(coloredString("| ", color: StringColor.grey));
+  stdout.write("${user['id']}");
+  stdout.write(coloredString('\n++--------+----------------------',
+      color: StringColor.grey));
+
+  stdout.write(coloredString("\n|| ", color: StringColor.grey));
+  stdout.write("NAME   ");
+  stdout.write(coloredString("| ", color: StringColor.grey));
+  stdout.write("${user['name']}");
+  stdout.write(coloredString('\n++--------+----------------------',
+      color: StringColor.grey));
+
+  stdout.write(coloredString("\n|| ", color: StringColor.grey));
+  stdout.write("AGE    ");
+  stdout.write(coloredString("| ", color: StringColor.grey));
+  stdout.write("${user['age']}");
+  stdout.write(coloredString('\n++--------+----------------------',
+      color: StringColor.grey));
+
+  stdout.write(coloredString("\n|| ", color: StringColor.grey));
+  stdout.write("EMAIL  ");
+  stdout.write(coloredString("| ", color: StringColor.grey));
+  stdout.write("${user['email']}");
+
+  stdout.write(coloredString("\n++===============================",
+      color: StringColor.grey));
+}
+
+clearTerminal() {
+  stdout.write("\x1B[2J\x1B[0;0H");
 }
